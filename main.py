@@ -1,15 +1,16 @@
-from PyQt5 import uic
 from PyQt5.QtWidgets import *
 import sys
 import sqlite3
+from addEditCoffeeForm import Ui_MainWindow
+from main1 import Ui_UI
 
 
-class Main(QMainWindow):
+class Main(QMainWindow, Ui_UI):
     def __init__(self):
         super().__init__()
-        uic.loadUi('main.ui', self)
+        self.setupUi(self)
         self.setFixedSize(800, 600)
-        con = sqlite3.connect('cofee.sqlite')
+        con = sqlite3.connect('data/cofee.sqlite')
         cur = con.cursor()
         data = list(cur.execute("""select sort, degree_of_roasting, type, description_of_taste, price, packaging_volume
                                 from main"""))
@@ -34,10 +35,10 @@ class Main(QMainWindow):
         self.add.show()
 
 
-class Insert(QMainWindow):
+class Insert(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('addEditCoffeeForm.ui', self)
+        self.setupUi(self)
         self.setFixedSize(800, 600)
         self.pushButton.clicked.connect(self.add)
 
@@ -48,7 +49,7 @@ class Insert(QMainWindow):
         price = self.lineEdit_3.text()
         des = self.lineEdit_5.text()
         v = self.lineEdit_6.text()
-        con = sqlite3.connect('cofee.sqlite')
+        con = sqlite3.connect('data/cofee.sqlite')
         cur = con.cursor()
         cur.execute(f"insert into main(sort, degree_of_roasting, type, description_of_taste, price, packaging_volume)"
                     f"values(?, ?, ?, ?, ?, ?)", (sort, degree, type, des, price, v))
@@ -58,9 +59,6 @@ class Insert(QMainWindow):
         self.m = Main()
         self.m.show()
 
-
-"""        cur.execute(f"insert into main(name_of_race, year, count_of_flags, count_of_of_starts, duration_of_starts)" 
-               f"values(?, ?, ?, ?, ?)", (name, year, flags, starts, minuts))"""
 
 def except_hook(cls, exception, traceback):
     sys.__excepthook__(cls, exception, traceback)
